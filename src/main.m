@@ -1,12 +1,10 @@
-s = 'cover';
+s = 'sea';
 s_noise = strcat('../assets/', s, '_noise.png');
 s_mask = strcat('../assets/', s, '_mask.png');
 s_org = strcat('../assets/', s, '.png');
 
+s_qt = strcat('../assets/', s, '_qt.png');
 s_harm = strcat('../assets/', s, '_harm.png');
-s_q = strcat('../assets/', s, '_q9.png');
-s_rev = strcat('../assets/', s, '_rev.png');
-s_recon = strcat('../assets/', s, '_recon.png');
 
 W = ya_imread(s_org);
 U = ya_imread(s_noise);
@@ -15,7 +13,8 @@ Msk = Msk(:, :, 1);
 
 clf
 
-x = 0.01:0.01:0.1;  
+%{
+x = [0.02 0.03 0.035 0.04 0.045 0.05 0.1 0.2];  
 y = x;
 
 for it=1:length(x)
@@ -36,8 +35,26 @@ end
 plot(x, y)
 hold on
 
+disp('123')
+
 for it=1:length(x)
     y(it) = psnr(W, inpainting_qt(U, Msk, 4, x(it)));
+end
+plot(x, y)
+hold on
+
+disp('456')
+
+for it=1:length(x)
+    y(it) = psnr(W, inpainting_qt(U, Msk, 5, x(it)));
+end
+plot(x, y)
+hold on
+
+disp('789')
+
+for it=1:length(x)
+    y(it) = psnr(W, inpainting_qt(U, Msk, 6, x(it)));
 end
 plot(x, y)
 hold on
@@ -48,22 +65,9 @@ hold on
 %plot(x, y)
 %hold on
 
-legend('step=1', 'step=2', 'step=3', 'step=4')
+legend('N=1', 'N=2', 'N=3', 'N=4', 'N=5', 'N=6')
 %title('c=1/(1+(x/\lambda)^2)')
-title('c=e^{(-x^2/(2\lambda^2))}')
-xlabel('\lambda')
+title('c=e^{(-|\nabla u|^2/(2\kappa^2))}')
+xlabel('\kappa')
 ylabel('PSNR')
-
-%subplot(2, 2, 1)
-%imshow(V)
-%subplot(2, 2, 2)
-%imshow(VA)
-%subplot(2, 2, 3)
-%imshow(VB)
-%subplot(2, 2, 4)
-%imshow(VC)
-
-%imwrite(V, s_harm)
-imwrite(V2, s_q)
-%imwrite(VB, s_rev)
-%imwrite(VC, s_recon)
+%}
